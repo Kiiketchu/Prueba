@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { usermodel } from './Models/user.model';
 
@@ -19,16 +19,13 @@ export class UserController {
     }
 
     @Get('/:email')
-    getUser(@Param('email') param): usermodel{
-        return this.validateQuest(this.userService.getByEmail(param))
+    getUser(@Param('email') param): usermodel | string{
+        const user = this.userService.getByEmail(param)
+        return user ?? "El usuario no exsite"
     }
 
-    validateQuest(request: usermodel){
-        if (request != undefined) {
-            return request;
-        } else {
-            console.error('El Usuario insertado no existe');
-            
-        } 
+    @Put('/update/:id')
+    updateUser (@Body() user:usermodel, @Param('id') id){
+        return this.userService.updateUserbyID(Number(id),user)
     }
 }
